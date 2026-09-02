@@ -9,6 +9,15 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      # Postgres accepts the container starting well before it's
+      # actually ready to accept connections. pg_isready checks the
+      # real thing, so `depends_on: condition: service_healthy` below
+      # can wait for that instead of just "container started".
+      test: ["CMD-SHELL", "pg_isready -U familydashboard -d familydashboard"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   backend:
     build:
@@ -28,7 +37,8 @@ services:
       SeedUsers__0__LastName: ${SEED_USER_0_LASTNAME}
       SeedUsers__0__IsAdmin: ${SEED_USER_0_ISADMIN}
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
   frontend:
     build:
