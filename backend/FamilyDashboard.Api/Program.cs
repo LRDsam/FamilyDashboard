@@ -80,12 +80,17 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Create the fixed family accounts (from configuration/User Secrets)
-// if they don't exist yet.
+// Apply any pending EF Core migrations, then create the fixed family
+// accounts (from configuration/User Secrets) if they don't exist yet.
+// Running migrations here (rather than via `dotnet ef database
+// update` from a dev machine) means the container is self-contained —
+// no separate migration step needed on the host it's deployed to.
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher<User>>();
+
+    await dbContext.Database.MigrateAsync();
     await UserSeeder.SeedAsync(dbContext, passwordHasher, app.Configuration);
 }
 
