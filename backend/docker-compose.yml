@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: familydashboard-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: familydashboard
+      POSTGRES_USER: familydashboard
+      POSTGRES_PASSWORD: familydashboard
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:

@@ -65,5 +65,8 @@ interface NavItem {
   `,
 })
 export class Sidenav {
-  protected readonly navItems: NavItem[] = [{ label: 'Home', path: '/' }];
+  protected readonly navItems: NavItem[] = [
+    { label: 'Home', path: '/' },
+    { label: 'Recepten', path: '/recipes' },
+  ];
 }

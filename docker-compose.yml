@@ -1,0 +1,44 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: familydashboard-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: familydashboard
+      POSTGRES_USER: familydashboard
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend/FamilyDashboard.Api
+    container_name: familydashboard-backend
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      # Issuer/Audience/ExpiryMinutes stay in appsettings.json — only
+      # the actual secrets are supplied here, from .env (see
+      # .env.example for the full list of variables to set).
+      ConnectionStrings__Default: "Host=postgres;Port=5432;Database=familydashboard;Username=familydashboard;Password=${POSTGRES_PASSWORD}"
+      Jwt__SigningKey: ${JWT_SIGNING_KEY}
+      SeedUsers__0__Username: ${SEED_USER_0_USERNAME}
+      SeedUsers__0__Password: ${SEED_USER_0_PASSWORD}
+      SeedUsers__0__FirstName: ${SEED_USER_0_FIRSTNAME}
+      SeedUsers__0__LastName: ${SEED_USER_0_LASTNAME}
+      SeedUsers__0__IsAdmin: ${SEED_USER_0_ISADMIN}
+    depends_on:
+      - postgres
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: familydashboard-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres-data:
