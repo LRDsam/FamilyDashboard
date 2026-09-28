@@ -7,6 +7,13 @@ services:
       POSTGRES_DB: familydashboard
       POSTGRES_USER: familydashboard
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      # Published to the host so a locally-run backend (dotnet run,
+      # outside Docker, during development) can reach Postgres via
+      # localhost:5432. Not needed by the deployed containers on the
+      # Pi — they reach Postgres over the internal Docker network via
+      # the "postgres" hostname regardless of this mapping.
+      - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:

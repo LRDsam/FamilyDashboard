@@ -68,5 +68,6 @@ export class Sidenav {
   protected readonly navItems: NavItem[] = [
     { label: 'Home', path: '/' },
     { label: 'Recepten', path: '/recipes' },
+    { label: 'Groepen', path: '/groups' },
   ];
 }

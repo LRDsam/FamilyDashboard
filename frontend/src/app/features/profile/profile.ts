@@ -1,7 +1,9 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { TextInput } from '../../shared/text-input/text-input';
 import { Button } from '../../shared/button/button';
+import { AuthService } from '../auth/auth.service';
 import { UserService } from './user.service';
 
 @Component({
@@ -26,6 +28,10 @@ import { UserService } from './user.service';
 
         <app-button label="Opslaan" type="submit" variant="success" [fullWidth]="true" />
       </form>
+
+      <div class="logout-section">
+        <app-button label="Uitloggen" [fullWidth]="true" (buttonClick)="onLogout()" />
+      </div>
     </div>
   `,
   styles: `
@@ -72,11 +78,19 @@ import { UserService } from './user.service';
       color: #15803d;
       font-size: 0.875rem;
     }
+
+    .logout-section {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #e5e7eb;
+    }
   `,
 })
 export class Profile implements OnInit {
   private readonly formBuilder = inject(FormBuilder);
   private readonly userService = inject(UserService);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   protected readonly username = signal('');
   protected readonly errorMessage = signal<string | null>(null);
@@ -110,5 +124,10 @@ export class Profile implements OnInit {
       next: () => this.saved.set(true),
       error: () => this.errorMessage.set('Opslaan is mislukt.'),
     });
+  }
+
+  protected onLogout(): void {
+    this.authService.logout();
+    this.router.navigateByUrl('/login');
   }
 }

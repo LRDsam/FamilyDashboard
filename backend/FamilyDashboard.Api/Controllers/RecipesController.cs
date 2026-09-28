@@ -1,5 +1,6 @@
 using FamilyDashboard.Api.Data;
 using FamilyDashboard.Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,6 +8,7 @@ namespace FamilyDashboard.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class RecipesController(AppDbContext dbContext) : ControllerBase
 {
     // GET /api/recipes

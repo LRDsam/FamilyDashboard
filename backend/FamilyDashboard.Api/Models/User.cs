@@ -22,4 +22,7 @@ public class User
     /// the migration adds the column.
     /// </summary>
     public bool IsAdmin { get; set; }
+
+    // Navigation property: the group memberships this user has.
+    public ICollection<GroupMember> GroupMemberships { get; set; } = new List<GroupMember>();
 }

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FamilyDashboard.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f98a2004cd07fe85a07970f1bd8b53eb97eb7417")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+977529d90edb94c6febe3eacf8a6bae09ea5a86c")]
 [assembly: System.Reflection.AssemblyProductAttribute("FamilyDashboard.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FamilyDashboard.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

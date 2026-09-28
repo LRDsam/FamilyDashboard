@@ -18,11 +18,21 @@ public class JwtTokenGenerator(IConfiguration configuration)
             jwtSection["SigningKey"] ?? throw new InvalidOperationException("Jwt:SigningKey is not configured.");
         var expiryMinutes = jwtSection.GetValue<int>("ExpiryMinutes");
 
-        Claim[] claims =
+        List<Claim> claims =
         [
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new(ClaimTypes.Name, user.Username),
         ];
+
+        // Admin-only endpoints check this role claim via
+        // [Authorize(Roles = "Admin")]. Note this is a snapshot from
+        // login time — changing IsAdmin later doesn't affect an
+        // already-issued token until it expires or the user logs in
+        // again.
+        if (user.IsAdmin)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+        }
 
         var credentials = new SigningCredentials(
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey)),

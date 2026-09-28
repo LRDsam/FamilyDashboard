@@ -23,6 +23,15 @@ export const routes: Routes = [
         path: 'profile',
         loadComponent: () => import('./features/profile/profile').then((m) => m.Profile),
       },
+      {
+        path: 'groups',
+        loadComponent: () => import('./features/groups/groups').then((m) => m.Groups),
+      },
+      {
+        path: 'groups/:id',
+        loadComponent: () =>
+          import('./features/groups/group-detail/group-detail').then((m) => m.GroupDetail),
+      },
     ],
   },
 ];
