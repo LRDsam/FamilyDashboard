@@ -69,5 +69,6 @@ export class Sidenav {
     { label: 'Home', path: '/' },
     { label: 'Recepten', path: '/recipes' },
     { label: 'Groepen', path: '/groups' },
+    { label: 'Verlichting', path: '/hue' },
   ];
 }

@@ -45,3 +45,7 @@ Thumbs.db
 
 # Secrets — never commit real values, only .env.example
 .env
+
+# .NET build output
+backend/FamilyDashboard.Api/bin/
+backend/FamilyDashboard.Api/obj/

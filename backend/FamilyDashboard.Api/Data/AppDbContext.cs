@@ -13,6 +13,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     public DbSet<GroupMember> GroupMembers => Set<GroupMember>();
 
+    public DbSet<AppSettings> AppSettings => Set<AppSettings>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // Two users can't share a username.

@@ -18,7 +18,14 @@ import { AddMemberModal } from './add-member-modal/add-member-modal';
     }
 
     <h2>Leden</h2>
-    <app-data-view [items]="members()" [columns]="columns" (add)="onOpenAddModal()" />
+    <app-data-view
+      [items]="members()"
+      [columns]="columns"
+      [removable]="true"
+      idField="id"
+      (add)="onOpenAddModal()"
+      (remove)="onRemoveMember($event)"
+    />
 
     <app-add-member-modal
       [(open)]="isAddModalOpen"
@@ -92,6 +99,10 @@ export class GroupDetail implements OnInit {
         this.addErrorMessage.set(this.errorMessageFor(error, username));
       },
     });
+  }
+
+  protected onRemoveMember(userId: string): void {
+    this.groupMemberService.remove(this.groupId, userId).subscribe(() => this.loadMembers());
   }
 
   private errorMessageFor(error: HttpErrorResponse, username: string): string {

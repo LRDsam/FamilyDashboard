@@ -1,0 +1,21 @@
+# Normalize all text files to LF in the repository, checked out with
+# the platform's native line endings. Prevents Windows tooling
+# (Visual Studio, dotnet build, VS Code) from flipping tracked files
+# to CRLF and showing up as spurious full-file diffs.
+* text=auto
+
+*.cs text
+*.csproj text
+*.ts text
+*.html text
+*.scss text
+*.css text
+*.json text
+*.md text
+*.yml text
+*.yaml text
+
+# Never treat compiled/binary output as text
+*.dll binary
+*.exe binary
+*.pdb binary

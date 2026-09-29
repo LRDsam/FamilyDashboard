@@ -32,6 +32,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/groups/group-detail/group-detail').then((m) => m.GroupDetail),
       },
+      {
+        path: 'hue',
+        loadComponent: () => import('./features/hue/hue').then((m) => m.Hue),
+      },
     ],
+
   },
 ];

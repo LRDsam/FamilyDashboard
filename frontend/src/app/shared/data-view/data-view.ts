@@ -11,8 +11,8 @@ export interface DataViewColumn<T> {
 
 /**
  * Generic, read-only table. Columns are defined by property name —
- * no per-cell templates or row actions (yet); keep it simple until a
- * real need for more shows up.
+ * no per-cell templates; keep it simple until a real need for more
+ * shows up.
  *
  * Usage:
  * <app-data-view [items]="groups()" [columns]="groupColumns" (add)="onAdd()" />
@@ -30,6 +30,11 @@ export interface DataViewColumn<T> {
  * Set [clickableRows]="true" to make each row clickable — e.g. to
  * "zoom in" to that record's detail page: <app-data-view
  * [clickableRows]="true" (rowClick)="onRowClick($event)" ... />
+ *
+ * Set [removable]="true" to show a trash icon per row. Clicking it
+ * asks for confirmation, then emits (remove) with the id read from
+ * [idField] (defaults to 'id'):
+ * <app-data-view [removable]="true" idField="id" (remove)="onRemove($event)" ... />
  */
 @Component({
   selector: 'app-data-view',
@@ -49,6 +54,9 @@ export interface DataViewColumn<T> {
           @for (column of columns(); track column.field) {
             <th>{{ column.header }}</th>
           }
+          @if (removable()) {
+            <th class="actions-header"></th>
+          }
         </tr>
       </thead>
       <tbody>
@@ -63,10 +71,28 @@ export interface DataViewColumn<T> {
             @for (column of columns(); track column.field) {
               <td>{{ getValue(row, column) }}</td>
             }
+            @if (removable()) {
+              <td class="actions">
+                <button
+                  type="button"
+                  class="remove-button"
+                  (click)="onRemoveClick($event, row)"
+                  aria-label="Verwijderen"
+                >
+                  <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path
+                      fill-rule="evenodd"
+                      d="M8 2a1 1 0 0 0-1 1v1H4a1 1 0 0 0 0 2h.4l.7 10.1A2 2 0 0 0 7.1 18h5.8a2 2 0 0 0 2-1.9L15.6 6h.4a1 1 0 1 0 0-2h-3V3a1 1 0 0 0-1-1H8Zm1 2h2V4H9v0Zm-1.6 4a1 1 0 0 1 1 .94l.4 7a1 1 0 1 1-2 .12l-.4-7A1 1 0 0 1 7.4 8Zm5.2 0a1 1 0 0 1 .96 1.06l-.4 7a1 1 0 1 1-2-.12l.4-7A1 1 0 0 1 12.6 8Z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </button>
+              </td>
+            }
           </tr>
         } @empty {
           <tr>
-            <td [attr.colspan]="columns().length" class="empty">Geen gegevens.</td>
+            <td [attr.colspan]="columns().length + (removable() ? 1 : 0)" class="empty">Geen gegevens.</td>
           </tr>
         }
       </tbody>
@@ -160,6 +186,42 @@ export interface DataViewColumn<T> {
       text-align: center;
       color: #6b7280;
     }
+
+    .actions-header {
+      width: 2.75rem;
+    }
+
+    .actions {
+      text-align: right;
+    }
+
+    .remove-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      padding: 0;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
+      color: #b91c1c;
+      cursor: pointer;
+    }
+
+    .remove-button:hover {
+      background: #fee2e2;
+    }
+
+    .remove-button:focus-visible {
+      outline: 2px solid #b91c1c;
+      outline-offset: 2px;
+    }
+
+    .remove-button svg {
+      width: 1.125rem;
+      height: 1.125rem;
+    }
   `,
 })
 export class DataView<T> {
@@ -170,6 +232,13 @@ export class DataView<T> {
   readonly clickableRows = input(false);
   readonly rowClick = output<T>();
 
+  /** Show a trash icon per row. Requires [idField] to know which property to emit. */
+  readonly removable = input(false);
+  /** Property on T holding the row's id — read and emitted by (remove) when set. Defaults to 'id'. */
+  readonly idField = input<keyof T>('id' as keyof T);
+  /** Emits the id (read via [idField]) after the user confirms removal. */
+  readonly remove = output<string>();
+
   protected getValue(row: T, column: DataViewColumn<T>): string {
     return String(row[column.field]);
   }
@@ -178,5 +247,17 @@ export class DataView<T> {
     if (this.clickableRows()) {
       this.rowClick.emit(row);
     }
+  }
+
+  protected onRemoveClick(event: Event, row: T): void {
+    // Stop the row's own click handler (used for clickableRows/rowClick)
+    // from also firing when the remove button inside it is clicked.
+    event.stopPropagation();
+
+    if (!confirm('Weet je zeker dat je dit item wilt verwijderen?')) {
+      return;
+    }
+
+    this.remove.emit(String(row[this.idField()]));
   }
 }
