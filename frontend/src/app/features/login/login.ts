@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TextInput } from '../../shared/text-input/text-input';
 import { Button } from '../../shared/button/button';
 import { AuthService } from '../auth/auth.service';
@@ -66,8 +66,17 @@ export class Login {
   private readonly formBuilder = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
-  protected readonly errorMessage = signal<string | null>(null);
+  // Set by the auth interceptor's redirect when a request came back
+  // 401 while we still had a (now-expired) token — see
+  // auth.interceptor.ts. Shown once, then overwritten by any actual
+  // login error.
+  protected readonly errorMessage = signal<string | null>(
+    this.route.snapshot.queryParamMap.get('sessionExpired')
+      ? 'Je sessie is verlopen. Log opnieuw in.'
+      : null,
+  );
 
   protected readonly loginForm = this.formBuilder.nonNullable.group({
     username: ['', Validators.required],

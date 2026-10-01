@@ -5,52 +5,48 @@ using Microsoft.EntityFrameworkCore;
 namespace FamilyDashboard.Api.Data;
 
 /// <summary>
-/// Creates the fixed family accounts on startup, if they don't exist
-/// yet. Reads usernames/passwords from configuration (see the
-/// "SeedUsers" section) — set those via .NET User Secrets locally, so
-/// real passwords never end up in appsettings/git.
+/// Creates the one fixed bootstrap account ("FDB-ADMIN") on startup,
+/// if it doesn't exist yet. This is the only user the application
+/// seeds itself — every other account is created afterwards by an
+/// admin through the dashboard (see UsersController).
+///
+/// Only the password is configurable, via the "AdminUser:Password"
+/// setting — set that through .NET User Secrets locally, or the
+/// ADMIN_PASSWORD variable in .env for Docker, so it never ends up in
+/// appsettings/git.
 /// </summary>
 public static class UserSeeder
 {
+    private const string AdminUsername = "FDB-ADMIN";
+
     public static async Task SeedAsync(
         AppDbContext dbContext,
         IPasswordHasher<User> passwordHasher,
         IConfiguration configuration
     )
     {
-        var seedUsers = configuration.GetSection("SeedUsers").Get<List<SeedUser>>() ?? [];
-
-        foreach (var seedUser in seedUsers)
+        var alreadyExists = await dbContext.Users.AnyAsync(u => u.Username == AdminUsername);
+        if (alreadyExists)
         {
-            var alreadyExists = await dbContext.Users.AnyAsync(u => u.Username == seedUser.Username);
-            if (alreadyExists)
-            {
-                continue;
-            }
-
-            var user = new User
-            {
-                Id = Guid.NewGuid(),
-                Username = seedUser.Username,
-                PasswordHash = string.Empty, // set right below
-                FirstName = seedUser.FirstName,
-                LastName = seedUser.LastName,
-                IsAdmin = seedUser.IsAdmin,
-            };
-            user.PasswordHash = passwordHasher.HashPassword(user, seedUser.Password);
-
-            dbContext.Users.Add(user);
+            return;
         }
 
-        await dbContext.SaveChangesAsync();
-    }
+        var password =
+            configuration["AdminUser:Password"]
+            ?? throw new InvalidOperationException("AdminUser:Password is not configured.");
 
-    private class SeedUser
-    {
-        public required string Username { get; set; }
-        public required string Password { get; set; }
-        public required string FirstName { get; set; }
-        public required string LastName { get; set; }
-        public bool IsAdmin { get; set; }
+        var user = new User
+        {
+            Id = Guid.NewGuid(),
+            Username = AdminUsername,
+            PasswordHash = string.Empty, // set right below
+            FirstName = "FDB",
+            LastName = "Admin",
+            IsAdmin = true,
+        };
+        user.PasswordHash = passwordHasher.HashPassword(user, password);
+
+        dbContext.Users.Add(user);
+        await dbContext.SaveChangesAsync();
     }
 }

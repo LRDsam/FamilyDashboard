@@ -19,6 +19,13 @@ export class GroupService {
     return this.http.get<Group[]>(API_URL);
   }
 
+  // Only the groups the current user is actually a member of — e.g.
+  // for the calendar event form's group picker, where picking a
+  // group you're not in would just be rejected by the backend anyway.
+  getMine(): Observable<Group[]> {
+    return this.http.get<Group[]>(`${API_URL}/mine`);
+  }
+
   getById(id: string): Observable<Group> {
     return this.http.get<Group>(`${API_URL}/${id}`);
   }

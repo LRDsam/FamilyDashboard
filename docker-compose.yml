@@ -38,16 +38,7 @@ services:
       # .env.example for the full list of variables to set).
       ConnectionStrings__Default: "Host=postgres;Port=5432;Database=familydashboard;Username=familydashboard;Password=${POSTGRES_PASSWORD}"
       Jwt__SigningKey: ${JWT_SIGNING_KEY}
-      SeedUsers__0__Username: ${SEED_USER_0_USERNAME}
-      SeedUsers__0__Password: ${SEED_USER_0_PASSWORD}
-      SeedUsers__0__FirstName: ${SEED_USER_0_FIRSTNAME}
-      SeedUsers__0__LastName: ${SEED_USER_0_LASTNAME}
-      SeedUsers__0__IsAdmin: ${SEED_USER_0_ISADMIN}
-      SeedUsers__1__Username: ${SEED_USER_1_USERNAME}
-      SeedUsers__1__Password: ${SEED_USER_1_PASSWORD}
-      SeedUsers__1__FirstName: ${SEED_USER_1_FIRSTNAME}
-      SeedUsers__1__LastName: ${SEED_USER_1_LASTNAME}
-      SeedUsers__1__IsAdmin: ${SEED_USER_1_ISADMIN}
+      AdminUser__Password: ${ADMIN_PASSWORD}
     depends_on:
       postgres:
         condition: service_healthy

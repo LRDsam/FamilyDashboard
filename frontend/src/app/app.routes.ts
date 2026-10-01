@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './features/auth/auth.guard';
+import { adminGuard } from './features/auth/admin.guard';
 
 export const routes: Routes = [
   {
@@ -35,6 +36,15 @@ export const routes: Routes = [
       {
         path: 'hue',
         loadComponent: () => import('./features/hue/hue').then((m) => m.Hue),
+      },
+      {
+        path: 'users',
+        canActivate: [adminGuard],
+        loadComponent: () => import('./features/users/users').then((m) => m.Users),
+      },
+      {
+        path: 'calendar',
+        loadComponent: () => import('./features/calendar/calendar').then((m) => m.Calendar),
       },
     ],
 

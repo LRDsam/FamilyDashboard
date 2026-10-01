@@ -9,6 +9,8 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
  * <app-text-input label="Omschrijving" [control]="form.controls.description" [multiline]="true" />
  * Password usage:
  * <app-text-input label="Wachtwoord" type="password" [control]="form.controls.password" />
+ * Date+time usage (native browser picker, value is a string like "2026-06-15T14:30"):
+ * <app-text-input label="Datum en tijd" type="datetime-local" [control]="form.controls.startsAt" />
  */
 @Component({
   selector: 'app-text-input',
@@ -57,5 +59,5 @@ export class TextInput {
   readonly label = input.required<string>();
   readonly control = input.required<FormControl<string>>();
   readonly multiline = input(false);
-  readonly type = input<'text' | 'password'>('text');
+  readonly type = input<'text' | 'password' | 'datetime-local'>('text');
 }

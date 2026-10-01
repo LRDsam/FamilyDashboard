@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { UserService } from '../../features/profile/user.service';
 
 interface NavItem {
   readonly label: string;
@@ -20,6 +21,13 @@ interface NavItem {
               [routerLinkActiveOptions]="{ exact: true }"
             >
               {{ item.label }}
+            </a>
+          </li>
+        }
+        @if (isAdmin()) {
+          <li>
+            <a routerLink="/users" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+              Gebruikersbeheer
             </a>
           </li>
         }
@@ -64,11 +72,20 @@ interface NavItem {
     }
   `,
 })
-export class Sidenav {
+export class Sidenav implements OnInit {
+  private readonly userService = inject(UserService);
+
+  protected readonly isAdmin = signal(false);
+
   protected readonly navItems: NavItem[] = [
     { label: 'Home', path: '/' },
     { label: 'Recepten', path: '/recipes' },
     { label: 'Groepen', path: '/groups' },
     { label: 'Verlichting', path: '/hue' },
+    { label: 'Agenda', path: '/calendar' },
   ];
+
+  ngOnInit(): void {
+    this.userService.getMe().subscribe((user) => this.isAdmin.set(user.isAdmin));
+  }
 }

@@ -15,6 +15,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     public DbSet<AppSettings> AppSettings => Set<AppSettings>();
 
+    public DbSet<CalendarEvent> CalendarEvents => Set<CalendarEvent>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // Two users can't share a username.
@@ -34,5 +36,18 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .Entity<GroupMember>()
             .HasIndex(gm => new { gm.GroupId, gm.UserId })
             .IsUnique();
+
+        // GroupId is optional (a private calendar event has none), so
+        // this relationship must be configured explicitly as
+        // optional — EF Core's convention would otherwise infer it
+        // from the nullable Guid? correctly anyway, but being
+        // explicit here documents the intent (and avoids surprises
+        // if GroupId's type ever changes).
+        modelBuilder
+            .Entity<CalendarEvent>()
+            .HasOne(e => e.Group)
+            .WithMany()
+            .HasForeignKey(e => e.GroupId)
+            .IsRequired(false);
     }
 }
