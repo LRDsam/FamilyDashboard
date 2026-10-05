@@ -34,20 +34,20 @@ import { Button } from '../../../../shared/button/button';
     form {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: var(--space-3);
     }
 
     .error {
       margin: 0;
-      color: #b91c1c;
+      color: var(--color-danger);
       font-size: 0.875rem;
     }
 
     .modal-actions {
       display: flex;
       justify-content: flex-end;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
+      gap: var(--space-2);
+      margin-top: var(--space-2);
     }
   `,
 })

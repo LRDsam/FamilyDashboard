@@ -39,7 +39,7 @@ import { HueLight } from '../hue.model';
 
     app-toggle {
       display: block;
-      margin-bottom: 0.75rem;
+      margin-bottom: var(--space-3);
     }
   `,
 })

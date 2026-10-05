@@ -23,7 +23,12 @@ import { Recipe } from '../recipe.model';
   selector: 'app-recipe-card',
   imports: [Card, ImageDisplay, TextDisplay, Button, RecipeFormModal],
   template: `
-    <app-card [editable]="editable()" (edit)="isEditModalOpen.set(true)" (delete)="delete.emit()">
+    <app-card
+      [editable]="editable()"
+      [deleteConfirmMessage]="deleteConfirmMessage()"
+      (edit)="isEditModalOpen.set(true)"
+      (delete)="delete.emit()"
+    >
       <span card-title>{{ name() }}</span>
       <app-image-display label="Foto" [src]="image()" [alt]="name()" />
       <app-text-display label="Omschrijving" [value]="description()" [multiline]="true" />
@@ -57,6 +62,10 @@ export class RecipeCard {
   readonly delete = output<void>();
 
   protected readonly isEditModalOpen = signal(false);
+
+  protected readonly deleteConfirmMessage = computed(
+    () => `Weet je zeker dat je '${this.name()}' wilt verwijderen?`,
+  );
 
   protected readonly formInitialValue = computed<RecipeFormValue>(() => ({
     name: this.name(),

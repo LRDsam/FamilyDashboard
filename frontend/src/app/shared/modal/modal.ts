@@ -51,7 +51,7 @@ import { Component, ElementRef, effect, input, model, viewChild } from '@angular
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 1rem;
+      padding: var(--space-4);
       background: rgb(0 0 0 / 50%);
       z-index: 1000;
     }
@@ -62,8 +62,8 @@ import { Component, ElementRef, effect, input, model, viewChild } from '@angular
       width: 100%;
       max-width: 32rem;
       max-height: 90vh;
-      border-radius: 8px;
-      background: #fff;
+      border-radius: var(--radius-lg);
+      background: var(--color-surface);
       box-shadow: 0 10px 25px rgb(0 0 0 / 20%);
       outline: none;
     }
@@ -72,44 +72,39 @@ import { Component, ElementRef, effect, input, model, viewChild } from '@angular
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 0.5rem;
-      padding: 1rem;
-      border-bottom: 1px solid #e5e7eb;
+      gap: var(--space-2);
+      padding: var(--space-4);
+      border-bottom: 1px solid var(--color-border);
     }
 
     .dialog-title {
       margin: 0;
       font-size: 1.125rem;
       font-weight: 600;
-      color: #111827;
+      color: var(--color-text-strong);
     }
 
     .close-button {
       flex-shrink: 0;
-      padding: 0.25rem 0.5rem;
-      border: 1px solid #d1d5db;
-      border-radius: 6px;
-      background: #f9fafb;
-      color: #374151;
+      padding: 0.25rem var(--space-2);
+      border: 1px solid var(--color-border-strong);
+      border-radius: var(--radius-md);
+      background: var(--color-surface-muted);
+      color: var(--color-text-subtle);
       font-size: 0.875rem;
       line-height: 1;
       cursor: pointer;
     }
 
     .close-button:hover {
-      background: #f3f4f6;
-    }
-
-    .close-button:focus-visible {
-      outline: 2px solid #2563eb;
-      outline-offset: 2px;
+      background: var(--color-surface-hover);
     }
 
     .dialog-body {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
-      padding: 1rem;
+      gap: var(--space-3);
+      padding: var(--space-4);
       overflow-y: auto;
     }
   `,

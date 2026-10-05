@@ -10,9 +10,9 @@ import { Component, signal } from '@angular/core';
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0.75rem 1.5rem;
-      background: #f3f4f6;
-      color: #4b5563;
+      padding: var(--space-2) var(--space-5);
+      background: var(--color-surface-hover);
+      color: var(--color-chrome-muted);
       font-size: 0.875rem;
     }
 

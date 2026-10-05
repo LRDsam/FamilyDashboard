@@ -1,4 +1,5 @@
-import { Component, input, output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
+import { ConfirmService } from '../confirm/confirm.service';
 
 /**
  * Generic content card with a title at the top, and optional
@@ -41,7 +42,7 @@ import { Component, input, output } from '@angular/core';
           <button
             type="button"
             class="icon-button delete"
-            (click)="delete.emit()"
+            (click)="onDeleteClick()"
             aria-label="Verwijderen"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
@@ -62,9 +63,9 @@ import { Component, input, output } from '@angular/core';
   styles: `
     :host {
       display: block;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      background: #fff;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      background: var(--color-surface);
       overflow: hidden;
     }
 
@@ -72,16 +73,16 @@ import { Component, input, output } from '@angular/core';
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 0.5rem;
-      padding: 0.75rem 1rem;
-      border-bottom: 1px solid #e5e7eb;
+      gap: var(--space-2);
+      padding: var(--space-3) var(--space-4);
+      border-bottom: 1px solid var(--color-border);
     }
 
     .card-title {
       margin: 0;
       font-size: 1rem;
       font-weight: 600;
-      color: #111827;
+      color: var(--color-text-strong);
     }
 
     .card-actions {
@@ -97,10 +98,10 @@ import { Component, input, output } from '@angular/core';
       width: 2rem;
       height: 2rem;
       padding: 0;
-      border: 1px solid #d1d5db;
-      border-radius: 6px;
-      background: #f9fafb;
-      color: #374151;
+      border: 1px solid var(--color-border-strong);
+      border-radius: var(--radius-md);
+      background: var(--color-surface-muted);
+      color: var(--color-text-subtle);
       cursor: pointer;
     }
 
@@ -110,31 +111,37 @@ import { Component, input, output } from '@angular/core';
     }
 
     .icon-button:hover {
-      background: #f3f4f6;
-    }
-
-    .icon-button:focus-visible {
-      outline: 2px solid #2563eb;
-      outline-offset: 2px;
+      background: var(--color-surface-hover);
     }
 
     .icon-button.delete:hover {
-      background: #fef2f2;
-      border-color: #fca5a5;
-      color: #b91c1c;
+      background: var(--color-danger-bg);
+      border-color: var(--color-danger-border);
+      color: var(--color-danger);
     }
 
     .card-body {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
-      padding: 1rem;
+      gap: var(--space-3);
+      padding: var(--space-4);
     }
   `,
 })
 export class Card {
+  private readonly confirmService = inject(ConfirmService);
+
   /** Shows the edit/delete icon buttons in the header when true. */
   readonly editable = input(false);
+  /** Message shown in the confirmation prompt before (delete) fires. */
+  readonly deleteConfirmMessage = input('Weet je zeker dat je dit wilt verwijderen?');
   readonly edit = output<void>();
   readonly delete = output<void>();
+
+  protected async onDeleteClick(): Promise<void> {
+    const confirmed = await this.confirmService.ask({ message: this.deleteConfirmMessage() });
+    if (confirmed) {
+      this.delete.emit();
+    }
+  }
 }

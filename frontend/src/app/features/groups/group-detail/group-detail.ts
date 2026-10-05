@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { DataView, DataViewColumn } from '../../../shared/data-view/data-view';
+import { SectionHeader } from '../../../shared/section-header/section-header';
 import { Group } from '../group.model';
 import { GroupService } from '../group.service';
 import { GroupMember } from '../group-member.model';
@@ -10,20 +11,25 @@ import { AddMemberModal } from './add-member-modal/add-member-modal';
 
 @Component({
   selector: 'app-group-detail',
-  imports: [DataView, AddMemberModal],
+  imports: [SectionHeader, DataView, AddMemberModal],
   template: `
     @if (group(); as group) {
       <h1>{{ group.groupCode }}</h1>
       <p class="description">{{ group.description }}</p>
     }
 
-    <h2>Leden</h2>
+    <app-section-header
+      title="Leden"
+      level="2"
+      addButtonLabel="Lid toevoegen"
+      (add)="onOpenAddModal()"
+    />
     <app-data-view
       [items]="members()"
       [columns]="columns"
       [removable]="true"
+      removeConfirmMessage="Weet je zeker dat je dit lid wilt verwijderen?"
       idField="id"
-      (add)="onOpenAddModal()"
       (remove)="onRemoveMember($event)"
     />
 
@@ -39,18 +45,13 @@ import { AddMemberModal } from './add-member-modal/add-member-modal';
     }
 
     h1 {
-      margin: 0 0 0.25rem;
+      margin: 0 0 var(--space-1);
       font-size: 1.5rem;
     }
 
     .description {
-      margin: 0 0 1.5rem;
-      color: #6b7280;
-    }
-
-    h2 {
-      margin: 0 0 1rem;
-      font-size: 1.125rem;
+      margin: 0 0 var(--space-5);
+      color: var(--color-text-muted);
     }
   `,
 })

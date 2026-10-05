@@ -23,22 +23,22 @@ import { Component, input } from '@angular/core';
     dl {
       display: flex;
       flex-direction: column;
-      gap: 0.25rem;
+      gap: var(--space-1);
       margin: 0;
     }
 
     dt {
       font-size: 0.875rem;
-      color: #374151;
+      color: var(--color-text-subtle);
     }
 
     dd {
       margin: 0;
-      padding: 0.375rem 0.75rem;
-      border: 1px solid #d1d5db;
-      border-radius: 6px;
-      background: #f3f4f6;
-      color: #1f2937;
+      padding: var(--space-2) var(--space-3);
+      border: 1px solid var(--color-border-strong);
+      border-radius: var(--radius-md);
+      background: var(--color-surface-hover);
+      color: var(--color-text);
     }
 
     dd.multiline {

@@ -68,12 +68,19 @@ const WEEKDAY_LABELS = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'];
     }
 
     .weekday-header {
-      margin-bottom: 0.5rem;
+      // Same box model as .grid below (border + 1px gap) even though
+      // it has neither visually — otherwise its 7 columns compute to
+      // a slightly different width than the day columns beneath them
+      // (the border + 6 gaps there eat ~8px the header doesn't
+      // account for) and the weekday labels drift out of alignment.
+      gap: 1px;
+      border: 1px solid transparent;
+      margin-bottom: var(--space-2);
     }
 
     .weekday {
-      padding: 0.25rem 0.5rem;
-      color: #6b7280;
+      padding: var(--space-1) var(--space-2);
+      color: var(--color-text-muted);
       font-size: 0.8125rem;
       font-weight: 600;
       text-align: center;
@@ -81,43 +88,43 @@ const WEEKDAY_LABELS = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'];
 
     .grid {
       gap: 1px;
-      background: #e5e7eb;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
+      background: var(--color-border);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
       overflow: hidden;
     }
 
     .day {
       display: flex;
       flex-direction: column;
-      gap: 0.25rem;
+      gap: var(--space-1);
       min-height: 6rem;
       padding: 0.375rem;
-      background: #fff;
+      background: var(--color-surface);
       cursor: pointer;
     }
 
     .day:hover {
-      background: #f9fafb;
+      background: var(--color-surface-muted);
     }
 
     .day:focus-visible {
-      outline: 2px solid #2563eb;
+      outline: 2px solid var(--color-focus-ring);
       outline-offset: -2px;
     }
 
     .day.outside-month {
-      background: #f9fafb;
+      background: var(--color-surface-muted);
     }
 
     .day.outside-month .day-number {
-      color: #9ca3af;
+      color: var(--color-text-faint);
     }
 
     .day-number {
       font-size: 0.8125rem;
       font-weight: 600;
-      color: #1f2937;
+      color: var(--color-text);
     }
 
     .events {
@@ -131,12 +138,12 @@ const WEEKDAY_LABELS = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'];
 
     .event {
       display: flex;
-      gap: 0.25rem;
+      gap: var(--space-1);
       overflow: hidden;
-      padding: 0.0625rem 0.25rem;
-      border-radius: 4px;
-      background: #eff6ff;
-      color: #1e3a8a;
+      padding: 0.0625rem var(--space-1);
+      border-radius: var(--radius-sm);
+      background: var(--color-info-bg);
+      color: var(--color-info-text);
       font-size: 0.75rem;
       white-space: nowrap;
     }
@@ -147,13 +154,18 @@ const WEEKDAY_LABELS = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'];
     }
 
     .event-title {
+      // min-width: 0 so this can actually shrink below its text's
+      // natural width — a flex item's automatic minimum is its
+      // content size otherwise, which can push .event (and this
+      // whole grid) wider than its container for a long title.
+      min-width: 0;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
     .event-initials {
       flex-shrink: 0;
-      color: #3b82f6;
+      color: var(--color-info);
     }
   `,
 })

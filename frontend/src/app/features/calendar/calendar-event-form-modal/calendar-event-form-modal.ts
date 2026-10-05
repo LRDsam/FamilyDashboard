@@ -55,14 +55,14 @@ function toDateTimeLocalValue(date: Date): string {
     form {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: var(--space-3);
     }
 
     .modal-actions {
       display: flex;
       justify-content: flex-end;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
+      gap: var(--space-2);
+      margin-top: var(--space-2);
     }
   `,
 })

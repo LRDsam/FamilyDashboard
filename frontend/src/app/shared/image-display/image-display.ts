@@ -27,13 +27,13 @@ import { NgOptimizedImage } from '@angular/common';
     dl {
       display: flex;
       flex-direction: column;
-      gap: 0.25rem;
+      gap: var(--space-1);
       margin: 0;
     }
 
     dt {
       font-size: 0.875rem;
-      color: #374151;
+      color: var(--color-text-subtle);
     }
 
     dd {
@@ -41,9 +41,9 @@ import { NgOptimizedImage } from '@angular/common';
       height: 200px;
       margin: 0;
       overflow: hidden;
-      border: 1px solid #d1d5db;
-      border-radius: 6px;
-      background: #f3f4f6;
+      border: 1px solid var(--color-border-strong);
+      border-radius: var(--radius-md);
+      background: var(--color-surface-hover);
     }
 
     img {

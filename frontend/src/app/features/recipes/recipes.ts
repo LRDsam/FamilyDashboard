@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { Grid } from '../../shared/grid/grid';
 import { GridSpan } from '../../shared/grid/grid-span';
 import { Button } from '../../shared/button/button';
+import { SectionHeader } from '../../shared/section-header/section-header';
 import { RecipeCard } from './recipe-card/recipe-card';
 import { RecipeFormModal, RecipeFormValue } from './recipe-form-modal/recipe-form-modal';
 import { Recipe } from './recipe.model';
@@ -9,12 +10,9 @@ import { RecipeService } from './recipe.service';
 
 @Component({
   selector: 'app-recipes',
-  imports: [Grid, GridSpan, Button, RecipeCard, RecipeFormModal],
+  imports: [SectionHeader, Grid, GridSpan, Button, RecipeCard, RecipeFormModal],
   template: `
-    <div class="page-header">
-      <h1>Recepten</h1>
-      <app-button label="Nieuw recept" (buttonClick)="isAddModalOpen.set(true)" />
-    </div>
+    <app-section-header title="Recepten" addButtonLabel="Nieuw recept toevoegen" (add)="isAddModalOpen.set(true)" />
 
     <app-grid>
       @for (recipe of recipes(); track recipe.id) {
@@ -38,15 +36,6 @@ import { RecipeService } from './recipe.service';
       [(open)]="isAddModalOpen"
       (submitRecipe)="onCreate($event)"
     />
-  `,
-  styles: `
-    .page-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
   `,
 })
 export class Recipes implements OnInit {

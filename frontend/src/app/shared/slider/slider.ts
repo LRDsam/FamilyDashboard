@@ -1,17 +1,13 @@
 import { Component, input, output } from '@angular/core';
 
 /**
- * Range slider. Like Toggle, [value] always reflects the *confirmed*
- * value — the parent is expected to make an API call on (valueChange)
- * and only update [value] once that succeeds.
+ * Native range slider, label + value bound similarly to Toggle:
+ * [value] always reflects the confirmed value, (valueChange) emits
+ * the intended new value. Fires on native (change), not (input), so
+ * it doesn't send an API call on every drag-tick — only once the
+ * user lets go.
  *
- * (valueChange) fires on release (the native "change" event), not on
- * every pixel of dragging (the native "input" event) — dragging still
- * moves the handle smoothly (that's the browser's own behavior), we
- * just avoid firing an API call per drag tick.
- *
- * Usage: <app-slider label="Helderheid" [value]="light.brightness" [min]="0" [max]="100"
- *           (valueChange)="onBrightnessChange(light.id, $event)" />
+ * Usage: <app-slider label="Helderheid" [value]="light.brightness" [step]="5" (valueChange)="onChange($event)" />
  */
 @Component({
   selector: 'app-slider',
@@ -38,21 +34,16 @@ import { Component, input, output } from '@angular/core';
     .field {
       display: flex;
       flex-direction: column;
-      gap: 0.25rem;
+      gap: var(--space-1);
     }
 
     .field-label {
       font-size: 0.875rem;
-      color: #374151;
+      color: var(--color-text-subtle);
     }
 
-    input[type='range'] {
-      accent-color: #2563eb;
-    }
-
-    input[type='range']:focus-visible {
-      outline: 2px solid #2563eb;
-      outline-offset: 2px;
+    input {
+      accent-color: var(--color-primary);
     }
   `,
 })
@@ -60,7 +51,6 @@ export class Slider {
   readonly value = input.required<number>();
   readonly min = input(0);
   readonly max = input(100);
-  /** Minimum increment the slider can move — e.g. 1 for whole percentages. */
   readonly step = input(1);
   readonly label = input<string>();
   readonly valueChange = output<number>();

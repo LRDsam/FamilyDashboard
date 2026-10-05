@@ -18,10 +18,13 @@ import { UserService } from '../../features/profile/user.service';
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 64px;
-      padding-inline: 1.5rem;
-      background: #1f2937;
-      color: #fff;
+      height: 56px;
+      padding-inline: var(--space-5);
+      background: var(--color-surface-dark);
+      color: var(--color-text-on-dark);
+      // The header sits on a dark background, so anything focused
+      // inside it needs a ring that's actually visible there.
+      --color-focus-ring: var(--color-focus-ring-on-dark);
     }
 
     h1 {
@@ -37,8 +40,8 @@ import { UserService } from '../../features/profile/user.service';
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      background: #4b5563;
-      color: #fff;
+      background: var(--color-chrome-muted);
+      color: var(--color-text-on-dark);
       font-size: 0.8125rem;
       font-weight: 600;
       text-decoration: none;
@@ -46,12 +49,7 @@ import { UserService } from '../../features/profile/user.service';
     }
 
     .avatar:hover {
-      background: #6b7280;
-    }
-
-    .avatar:focus-visible {
-      outline: 2px solid #93c5fd;
-      outline-offset: 2px;
+      background: var(--color-text-muted);
     }
   `,
 })

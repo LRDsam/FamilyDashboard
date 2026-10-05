@@ -1,5 +1,108 @@
 /* You can add global styles to this file, and also import other style files */
 
+:root {
+  // --- Primitive color scale -------------------------------------
+  // These match Tailwind CSS's default palette values, which were
+  // already in use (by hand, copy-pasted) across every component —
+  // formalizing that instead of inventing a new palette.
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+
+  --blue-50: #eff6ff;
+  --blue-300: #93c5fd;
+  --blue-500: #3b82f6;
+  --blue-600: #2563eb;
+  --blue-700: #1d4ed8;
+  --blue-900: #1e3a8a;
+
+  --green-300: #86efac;
+  --green-400: #6ee7a0;
+  --green-600: #16a34a;
+  --green-700: #15803d;
+  --green-900: #14532d;
+
+  --red-50: #fef2f2;
+  --red-100: #fee2e2;
+  --red-300: #fca5a5;
+  --red-700: #b91c1c;
+
+  // --- Semantic tokens ---------------------------------------------
+  // Components reference these, not the primitives above directly —
+  // so "what color is danger text" is answered in one place.
+  --color-primary: var(--blue-600);
+  --color-primary-hover: var(--blue-700);
+
+  --color-success: var(--green-600);
+  --color-success-hover: var(--green-700);
+  --color-success-bg: var(--green-300);
+  --color-success-bg-hover: var(--green-400);
+  --color-success-text: var(--green-900);
+
+  --color-danger: var(--red-700);
+  --color-danger-bg: var(--red-50);
+  --color-danger-bg-hover: var(--red-100);
+  --color-danger-border: var(--red-300);
+
+  --color-info: var(--blue-500);
+  --color-info-bg: var(--blue-50);
+  --color-info-text: var(--blue-900);
+
+  --color-text: var(--gray-800);
+  --color-text-strong: var(--gray-900);
+  --color-text-subtle: var(--gray-700);
+  --color-text-muted: var(--gray-500);
+  --color-text-faint: var(--gray-400);
+  --color-text-on-dark: #fff;
+
+  --color-border: var(--gray-200);
+  --color-border-strong: var(--gray-300);
+
+  --color-surface: #fff;
+  --color-surface-muted: var(--gray-50);
+  --color-surface-hover: var(--gray-100);
+  --color-surface-dark: var(--gray-800);
+
+  --color-focus-ring: var(--blue-600);
+  --color-focus-ring-on-dark: var(--blue-300);
+
+  // --- Chrome / navigation tokens -----------------------------------
+  // The header and sidenav sit on their own dark backgrounds and dip
+  // into the gray scale for a different purpose than body text or
+  // page surfaces (e.g. a nav background, not a surface; nav link
+  // text, not body text) — named here instead of components reaching
+  // for --color-text-* / --gray-* directly for things that aren't
+  // text or a page surface.
+  --color-nav-bg: var(--gray-900);
+  --color-nav-bg-hover: var(--color-surface-dark);
+  --color-nav-bg-active: var(--gray-700);
+  --color-nav-text: var(--gray-300);
+  --color-chrome-muted: var(--gray-600);
+
+  // --- Spacing scale ------------------------------------------------
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+
+  // --- Radius ---------------------------------------------------------
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -9,4 +112,21 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--color-text);
+  background: var(--color-surface-muted);
+}
+
+// A consistent focus style everywhere, instead of each component
+// defining (or forgetting to define) its own :focus-visible outline.
+// Components can still override --color-focus-ring locally (e.g. on
+// a dark background) by setting it on their :host.
+:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
 }

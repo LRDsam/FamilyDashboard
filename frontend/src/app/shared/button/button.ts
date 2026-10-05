@@ -28,6 +28,7 @@ import { RouterLink } from '@angular/router';
       <a
         class="app-button"
         [class.success]="variant() === 'success'"
+        [class.danger]="variant() === 'danger'"
         [href]="link()"
         [target]="newTab() ? '_blank' : undefined"
         rel="noopener noreferrer"
@@ -38,6 +39,7 @@ import { RouterLink } from '@angular/router';
       <a
         class="app-button"
         [class.success]="variant() === 'success'"
+        [class.danger]="variant() === 'danger'"
         [routerLink]="link()"
         [target]="newTab() ? '_blank' : undefined"
       >
@@ -47,6 +49,7 @@ import { RouterLink } from '@angular/router';
       <button
         class="app-button"
         [class.success]="variant() === 'success'"
+        [class.danger]="variant() === 'danger'"
         [type]="type()"
         (click)="buttonClick.emit()"
       >
@@ -72,12 +75,12 @@ import { RouterLink } from '@angular/router';
       align-items: center;
       justify-content: center;
       text-align: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
       border: 1px solid transparent;
-      border-radius: 6px;
-      background: #2563eb;
-      color: #fff;
+      border-radius: var(--radius-md);
+      background: var(--color-primary);
+      color: var(--color-text-on-dark);
       font-size: 0.9375rem;
       font-weight: 600;
       text-decoration: none;
@@ -85,25 +88,31 @@ import { RouterLink } from '@angular/router';
     }
 
     .app-button:hover {
-      background: #1d4ed8;
+      background: var(--color-primary-hover);
     }
 
-    .app-button:focus-visible {
-      outline: 2px solid #1d4ed8;
-      outline-offset: 2px;
-    }
-
+    // No explicit :focus-visible rule needed here — the global one in
+    // styles.scss applies, and the .success override below just
+    // changes which color it uses on this element.
     .app-button.success {
-      background: #86efac;
-      color: #14532d;
+      --color-focus-ring: var(--color-success);
+      background: var(--color-success-bg);
+      color: var(--color-success-text);
     }
 
     .app-button.success:hover {
-      background: #6ee7a0;
+      background: var(--color-success-bg-hover);
     }
 
-    .app-button.success:focus-visible {
-      outline: 2px solid #16a34a;
+    .app-button.danger {
+      --color-focus-ring: var(--color-danger);
+      border-color: var(--color-danger-border);
+      background: var(--color-danger-bg);
+      color: var(--color-danger);
+    }
+
+    .app-button.danger:hover {
+      background: var(--color-danger-bg-hover);
     }
   `,
 })
@@ -115,7 +124,7 @@ export class Button {
   /** Native button `type`, only used when no `link` is set. */
   readonly type = input<'button' | 'submit'>('button');
   /** Visual color variant. */
-  readonly variant = input<'primary' | 'success'>('primary');
+  readonly variant = input<'primary' | 'success' | 'danger'>('primary');
   /** Stretch the button to the full width of its container. */
   readonly fullWidth = input(false);
   /** Open the link in a new tab (only relevant when `link` is set). */

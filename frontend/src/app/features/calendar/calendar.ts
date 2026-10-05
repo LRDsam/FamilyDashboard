@@ -1,5 +1,6 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Button } from '../../shared/button/button';
+import { SectionHeader } from '../../shared/section-header/section-header';
 import { CalendarEventFormModal } from './calendar-event-form-modal/calendar-event-form-modal';
 import { CalendarEvent, CreateCalendarEventRequest } from './calendar-event.model';
 import { CalendarEventService } from './calendar-event.service';
@@ -63,17 +64,15 @@ function buildGridDays(viewedMonth: Date, events: CalendarEvent[]): CalendarDay[
 
 @Component({
   selector: 'app-calendar',
-  imports: [Button, MonthGrid, CalendarEventFormModal],
+  imports: [SectionHeader, Button, MonthGrid, CalendarEventFormModal],
   template: `
-    <div class="header">
-      <h1>Agenda</h1>
+    <app-section-header title="Agenda" addButtonLabel="Nieuw agendapunt toevoegen" (add)="onAddClick()">
       <div class="month-nav">
         <app-button label="‹ Vorige" (buttonClick)="onPreviousMonth()" />
         <span class="month-label">{{ monthLabel() }}</span>
         <app-button label="Volgende ›" (buttonClick)="onNextMonth()" />
       </div>
-      <app-button label="+ Nieuw agendapunt" variant="success" (buttonClick)="onAddClick()" />
-    </div>
+    </app-section-header>
 
     <app-month-grid [days]="gridDays()" (dayClick)="onDayClick($event)" />
 
@@ -88,24 +87,10 @@ function buildGridDays(viewedMonth: Date, events: CalendarEvent[]): CalendarDay[
       display: block;
     }
 
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-bottom: 1rem;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 1.5rem;
-    }
-
     .month-nav {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: var(--space-3);
     }
 
     .month-label {

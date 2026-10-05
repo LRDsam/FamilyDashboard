@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { UserService } from '../../features/profile/user.service';
+import { SidenavStateService } from './sidenav-state.service';
 
 interface NavItem {
   readonly label: string;
@@ -10,6 +11,9 @@ interface NavItem {
 @Component({
   selector: 'app-sidenav',
   imports: [RouterLink, RouterLinkActive],
+  host: {
+    '[class.collapsed]': 'sidenavState.collapsed()',
+  },
   template: `
     <nav aria-label="Main navigation">
       <ul>
@@ -38,11 +42,23 @@ interface NavItem {
     :host {
       display: block;
       height: 100%;
-      background: #111827;
+      overflow: hidden;
+      background: var(--color-nav-bg);
+      // Dark background — override the global focus ring so it's
+      // actually visible on it.
+      --color-focus-ring: var(--color-focus-ring-on-dark);
+    }
+
+    // The width itself is controlled by Shell (the grid column
+    // shrinks to 0) — this just also takes the nav links out of the
+    // tab order and off screen readers while that's happening,
+    // which a width of 0 alone wouldn't do.
+    :host(.collapsed) {
+      visibility: hidden;
     }
 
     nav {
-      padding-block: 1rem;
+      padding-block: var(--space-4);
     }
 
     ul {
@@ -53,27 +69,28 @@ interface NavItem {
 
     a {
       display: block;
-      padding: 0.75rem 1.5rem;
-      color: #d1d5db;
+      padding: var(--space-3) var(--space-5);
+      color: var(--color-nav-text);
       text-decoration: none;
       font-size: 0.9375rem;
     }
 
     a:hover,
     a:focus-visible {
-      background: #1f2937;
-      color: #fff;
+      background: var(--color-nav-bg-hover);
+      color: var(--color-text-on-dark);
     }
 
     a.active {
-      background: #374151;
-      color: #fff;
+      background: var(--color-nav-bg-active);
+      color: var(--color-text-on-dark);
       font-weight: 600;
     }
   `,
 })
 export class Sidenav implements OnInit {
   private readonly userService = inject(UserService);
+  protected readonly sidenavState = inject(SidenavStateService);
 
   protected readonly isAdmin = signal(false);
 

@@ -1,4 +1,5 @@
-import { Component, input, output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
+import { ConfirmService } from '../confirm/confirm.service';
 
 /**
  * One column definition for `DataView`: a header label, and the
@@ -14,18 +15,18 @@ export interface DataViewColumn<T> {
  * no per-cell templates; keep it simple until a real need for more
  * shows up.
  *
+ * Doesn't have its own "add" button — that lives in `SectionHeader`,
+ * above wherever a `DataView` is used, so every list in the app adds
+ * rows the same way instead of each table rolling its own.
+ *
  * Usage:
- * <app-data-view [items]="groups()" [columns]="groupColumns" (add)="onAdd()" />
+ * <app-data-view [items]="groups()" [columns]="groupColumns" />
  *
  * where (outside the template, e.g. as a class field):
  * protected readonly groupColumns: DataViewColumn<Group>[] = [
  *   { header: 'Code', field: 'groupCode' },
  *   { header: 'Omschrijving', field: 'description' },
  * ];
- *
- * Omit (add) or set [showAddButton]="false" to hide the + button —
- * e.g. for a read-only table, or while the caller doesn't yet know
- * whether the current user is allowed to add a row.
  *
  * Set [clickableRows]="true" to make each row clickable — e.g. to
  * "zoom in" to that record's detail page: <app-data-view
@@ -39,15 +40,7 @@ export interface DataViewColumn<T> {
 @Component({
   selector: 'app-data-view',
   template: `
-    @if (showAddButton()) {
-      <div class="toolbar">
-        <button type="button" class="add-button" (click)="add.emit()" aria-label="Nieuwe toevoegen">
-          <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-            <path d="M10 4a1 1 0 0 1 1 1v4h4a1 1 0 1 1 0 2h-4v4a1 1 0 1 1-2 0v-4H5a1 1 0 1 1 0-2h4V5a1 1 0 0 1 1-1Z" />
-          </svg>
-        </button>
-      </div>
-    }
+    <div class="table-scroll">
     <table>
       <thead>
         <tr>
@@ -97,72 +90,50 @@ export interface DataViewColumn<T> {
         }
       </tbody>
     </table>
+    </div>
   `,
   styles: `
     :host {
       display: block;
     }
 
-    .toolbar {
-      display: flex;
-      justify-content: flex-end;
-      margin-bottom: 0.75rem;
-    }
-
-    .add-button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 2.25rem;
-      height: 2.25rem;
-      padding: 0;
-      border: none;
-      border-radius: 50%;
-      background: #2563eb;
-      color: #fff;
-      cursor: pointer;
-    }
-
-    .add-button:hover {
-      background: #1d4ed8;
-    }
-
-    .add-button:focus-visible {
-      outline: 2px solid #1d4ed8;
-      outline-offset: 2px;
-    }
-
-    .add-button svg {
-      width: 1.25rem;
-      height: 1.25rem;
+    // A table only ever needs to scroll on its own, never the whole
+    // page — this wrapper (not the page's main area, which never
+    // scrolls sideways) is what lets a table with more columns than
+    // fit on a narrow screen still be reachable, scrolled in place
+    // while the rest of the page stays put. min-width: max-content
+    // on the table below is what makes that actually kick in instead
+    // of just squeezing the columns down to nothing.
+    .table-scroll {
+      overflow-x: auto;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
     }
 
     table {
       width: 100%;
+      min-width: max-content;
       border-collapse: collapse;
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      overflow: hidden;
+      background: var(--color-surface);
     }
 
     th,
     td {
-      padding: 0.625rem 1rem;
+      padding: 0.625rem var(--space-4);
       text-align: left;
       font-size: 0.9375rem;
     }
 
     th {
-      background: #f9fafb;
-      color: #374151;
+      background: var(--color-surface-muted);
+      color: var(--color-text-subtle);
       font-weight: 600;
-      border-bottom: 1px solid #e5e7eb;
+      border-bottom: 1px solid var(--color-border);
     }
 
     td {
-      border-bottom: 1px solid #f3f4f6;
-      color: #1f2937;
+      border-bottom: 1px solid var(--color-surface-hover);
+      color: var(--color-text);
     }
 
     tr:last-child td {
@@ -174,17 +145,16 @@ export interface DataViewColumn<T> {
     }
 
     tr.clickable:hover {
-      background: #f9fafb;
+      background: var(--color-surface-muted);
     }
 
     tr.clickable:focus-visible {
-      outline: 2px solid #2563eb;
       outline-offset: -2px;
     }
 
     .empty {
       text-align: center;
-      color: #6b7280;
+      color: var(--color-text-muted);
     }
 
     .actions-header {
@@ -203,19 +173,15 @@ export interface DataViewColumn<T> {
       height: 2rem;
       padding: 0;
       border: none;
-      border-radius: 6px;
+      border-radius: var(--radius-sm);
       background: transparent;
-      color: #b91c1c;
+      color: var(--color-danger);
       cursor: pointer;
+      --color-focus-ring: var(--color-danger);
     }
 
     .remove-button:hover {
-      background: #fee2e2;
-    }
-
-    .remove-button:focus-visible {
-      outline: 2px solid #b91c1c;
-      outline-offset: 2px;
+      background: var(--color-danger-bg);
     }
 
     .remove-button svg {
@@ -225,15 +191,17 @@ export interface DataViewColumn<T> {
   `,
 })
 export class DataView<T> {
+  private readonly confirmService = inject(ConfirmService);
+
   readonly items = input.required<T[]>();
   readonly columns = input.required<DataViewColumn<T>[]>();
-  readonly showAddButton = input(true);
-  readonly add = output<void>();
   readonly clickableRows = input(false);
   readonly rowClick = output<T>();
 
   /** Show a trash icon per row. Requires [idField] to know which property to emit. */
   readonly removable = input(false);
+  /** Message shown in the confirmation prompt before (remove) fires. */
+  readonly removeConfirmMessage = input('Weet je zeker dat je dit item wilt verwijderen?');
   /** Property on T holding the row's id — read and emitted by (remove) when set. Defaults to 'id'. */
   readonly idField = input<keyof T>('id' as keyof T);
   /** Emits the id (read via [idField]) after the user confirms removal. */
@@ -249,12 +217,13 @@ export class DataView<T> {
     }
   }
 
-  protected onRemoveClick(event: Event, row: T): void {
+  protected async onRemoveClick(event: Event, row: T): Promise<void> {
     // Stop the row's own click handler (used for clickableRows/rowClick)
     // from also firing when the remove button inside it is clicked.
     event.stopPropagation();
 
-    if (!confirm('Weet je zeker dat je dit item wilt verwijderen?')) {
+    const confirmed = await this.confirmService.ask({ message: this.removeConfirmMessage() });
+    if (!confirmed) {
       return;
     }
 

@@ -38,26 +38,26 @@ import { AuthService } from '../auth/auth.service';
     .login-card {
       width: 100%;
       max-width: 20rem;
-      padding: 1.5rem;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      background: #fff;
+      padding: var(--space-5);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      background: var(--color-surface);
     }
 
     h1 {
-      margin: 0 0 1rem;
+      margin: 0 0 var(--space-4);
       font-size: 1.25rem;
     }
 
     form {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: var(--space-3);
     }
 
     .error {
       margin: 0;
-      color: #b91c1c;
+      color: var(--color-danger);
       font-size: 0.875rem;
     }
   `,

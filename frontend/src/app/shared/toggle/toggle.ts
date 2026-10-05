@@ -37,13 +37,13 @@ import { Component, input, output } from '@angular/core';
     .toggle-wrapper {
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: var(--space-2);
       cursor: pointer;
     }
 
     .toggle-label {
       font-size: 0.875rem;
-      color: #374151;
+      color: var(--color-text-subtle);
     }
 
     .switch {
@@ -53,18 +53,14 @@ import { Component, input, output } from '@angular/core';
       padding: 0;
       border: none;
       border-radius: 999px;
-      background: #d1d5db;
+      background: var(--color-border-strong);
       cursor: pointer;
       transition: background 0.15s ease;
+      --color-focus-ring: var(--color-success);
     }
 
     .switch.on {
-      background: #16a34a;
-    }
-
-    .switch:focus-visible {
-      outline: 2px solid #2563eb;
-      outline-offset: 2px;
+      background: var(--color-success);
     }
 
     .knob {
@@ -74,7 +70,7 @@ import { Component, input, output } from '@angular/core';
       width: 1.125rem;
       height: 1.125rem;
       border-radius: 50%;
-      background: #fff;
+      background: var(--color-surface);
       transition: transform 0.15s ease;
     }
 

@@ -1,12 +1,13 @@
 :host {
   display: grid;
-  grid-template-columns: 220px 1fr;
-  grid-template-rows: 64px 1fr auto;
+  grid-template-columns: var(--sidenav-width, 220px) 1fr;
+  grid-template-rows: 56px 1fr auto;
   grid-template-areas:
     'header header'
     'sidenav main'
     'footer footer';
   height: 100dvh;
+  transition: grid-template-columns 0.2s ease;
 }
 
 app-header {
@@ -19,10 +20,60 @@ app-sidenav {
 
 main {
   grid-area: main;
-  overflow: auto;
-  padding: 1.5rem;
+  // Only the vertical direction is allowed to scroll — no page
+  // content is meant to need horizontal scrolling, so this also
+  // guarantees a 1px rounding error somewhere inside a page (a grid
+  // column, a flex item) can never surface as a tiny side-to-side
+  // scrollbar.
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: var(--space-5);
+  background: var(--color-surface-muted);
 }
 
 app-footer {
   grid-area: footer;
+}
+
+// Not part of a named grid area on purpose — it spans both columns
+// of the sidenav/main row and is positioned by hand (margin-left +
+// translateX) so it always sits right on the boundary between them,
+// centered on that row's height, whether the sidenav is open (220px)
+// or collapsed (0).
+.sidenav-toggle {
+  grid-row: 2;
+  grid-column: 1 / 3;
+  justify-self: start;
+  align-self: center;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  margin-left: var(--sidenav-width, 220px);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-text-subtle);
+  cursor: pointer;
+  transform: translateX(-50%);
+  transition:
+    margin-left 0.2s ease,
+    background 0.15s ease;
+}
+
+.sidenav-toggle:hover {
+  background: var(--color-surface-hover);
+}
+
+.sidenav-toggle svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  transition: transform 0.2s ease;
+}
+
+.sidenav-toggle svg.flipped {
+  transform: rotate(180deg);
 }

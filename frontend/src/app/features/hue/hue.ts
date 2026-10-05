@@ -61,18 +61,18 @@ import { HueLight, HueStatus } from './hue.model';
     }
 
     h1 {
-      margin: 0 0 1rem;
+      margin: 0 0 var(--space-4);
       font-size: 1.5rem;
     }
 
     p {
-      margin: 0 0 1rem;
+      margin: 0 0 var(--space-4);
     }
 
     .error {
-      margin-top: 0.75rem;
+      margin-top: var(--space-3);
       margin-bottom: 0;
-      color: #b91c1c;
+      color: var(--color-danger);
       font-size: 0.875rem;
     }
   `,

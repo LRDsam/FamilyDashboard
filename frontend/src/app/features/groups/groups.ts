@@ -1,23 +1,22 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { DataView, DataViewColumn } from '../../shared/data-view/data-view';
+import { SectionHeader } from '../../shared/section-header/section-header';
 import { Group } from './group.model';
 import { GroupService } from './group.service';
 import { GroupFormModal, GroupFormValue } from './group-form-modal/group-form-modal';
 
 @Component({
   selector: 'app-groups',
-  imports: [DataView, GroupFormModal],
+  imports: [SectionHeader, DataView, GroupFormModal],
   template: `
-    <h1>Groepen</h1>
-
-    <app-data-view
-      [items]="groups()"
-      [columns]="columns"
-      [clickableRows]="true"
-      (rowClick)="onRowClick($event)"
+    <app-section-header
+      title="Groepen"
+      addButtonLabel="Nieuwe groep toevoegen"
       (add)="isAddModalOpen.set(true)"
     />
+
+    <app-data-view [items]="groups()" [columns]="columns" [clickableRows]="true" (rowClick)="onRowClick($event)" />
 
     <app-group-form-modal
       title="Nieuwe groep"
@@ -28,11 +27,6 @@ import { GroupFormModal, GroupFormValue } from './group-form-modal/group-form-mo
   styles: `
     :host {
       display: block;
-    }
-
-    h1 {
-      margin: 0 0 1rem;
-      font-size: 1.5rem;
     }
   `,
 })

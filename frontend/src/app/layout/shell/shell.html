@@ -2,8 +2,23 @@
 
 <app-sidenav />
 
+<button type="button" class="sidenav-toggle" (click)="toggleSidenav()" [attr.aria-label]="toggleLabel()">
+  <svg
+    viewBox="0 0 20 20"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    aria-hidden="true"
+    [class.flipped]="sidenavState.collapsed()"
+  >
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12.5 5 7.5 10l5 5" />
+  </svg>
+</button>
+
 <main>
   <router-outlet />
 </main>
 
 <app-footer />
+
+<app-confirm-dialog />

@@ -9,7 +9,7 @@ import { Component } from '@angular/core';
     :host {
       display: grid;
       grid-template-columns: repeat(12, 1fr);
-      gap: 1rem;
+      gap: var(--space-4);
       width: 100%;
     }
   `,
