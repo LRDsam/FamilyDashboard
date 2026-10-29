@@ -1,6 +1,0 @@
-@FamilyDashboard.Api_HostAddress = http://localhost:5252
-
-GET {{FamilyDashboard.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
