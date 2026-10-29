@@ -4,6 +4,9 @@ A self-hosted dashboard for my family, running on a Raspberry Pi at home.
 It covers shared recipes, a calendar with private and group events, family
 groups, and control of our Philips Hue lights.
 
+![Recipes](docs/screenshots/recipes.webp)
+![Calendar](docs/screenshots/calendar.png)
+
 ## Stack
 
 - **Frontend**: Angular 22 (standalone components, signals), with its own small component library and design tokens
